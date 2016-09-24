@@ -13,7 +13,7 @@ class ServiceSpec extends FlatSpec with Matchers with ScalatestRouteTest with Se
   override val logger = NoLogging
 
   val name = "John"
-  val ip1Info = GreetingResult(s"Hello $name!")
+  val ip1Info = GreetingResult(s"Hello, $name!")
 
   "Service" should "respond to greeting request" in {
     Get(s"/name/$name") ~> routes ~> check {

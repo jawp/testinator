@@ -32,7 +32,7 @@ trait Service extends Protocols {
   val logger: LoggingAdapter
 
   def greet(nameToGreet: String): Future[Either[String, GreetingResult]] = Future {
-    Right(GreetingResult(s"Hello $nameToGreet!"))
+    Right(GreetingResult(s"Hello, $nameToGreet!"))
   }
 
   val routes = {
