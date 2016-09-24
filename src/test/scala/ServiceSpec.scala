@@ -15,7 +15,7 @@ class ServiceSpec extends FlatSpec with Matchers with ScalatestRouteTest with Se
   val name = "John"
   val ip1Info = GreetingResult(s"Hello, $name!")
 
-  "Service" should "respond to greeting request" in {
+  "Testinator" should "respond to greeting request" in {
     Get(s"/name/$name") ~> routes ~> check {
       status shouldBe OK
       contentType shouldBe `application/json`
