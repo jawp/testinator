@@ -1,9 +1,10 @@
-import Messages
+import akka.event.NoLogging
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model.ContentTypes._
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import model.Messages
+import model.HomePage
+import model.Messages._
 import org.scalatest._
 
 class ServiceSpec extends FlatSpec with Matchers with ScalatestRouteTest with Service {
@@ -19,6 +20,14 @@ class ServiceSpec extends FlatSpec with Matchers with ScalatestRouteTest with Se
       status shouldBe OK
       contentType shouldBe `application/json`
       responseAs[GreetingResult] shouldBe expectedResult
+    }
+  }
+
+  "Testinator" should "show home page" in {
+    Get("/") ~> routes ~> check {
+      status shouldBe OK
+      contentType shouldBe `text/xml(UTF-8)`
+      responseAs[String] shouldEqual HomePage.content.mkString
     }
   }
 }
