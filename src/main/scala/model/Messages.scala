@@ -1,6 +1,8 @@
+package model
+
 import spray.json.DefaultJsonProtocol
 
-object Model {
+object Messages {
 
   case class GreetingResult(name: String)
 
