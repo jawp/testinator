@@ -9,6 +9,7 @@ import model.HomePage
 import model.Messages._
 
 abstract class Service(config: ConfigDI) extends Protocols {
+  import config._
 
   implicit val system: ActorSystem
   implicit val materializer: Materializer
@@ -28,6 +29,6 @@ abstract class Service(config: ConfigDI) extends Protocols {
     }
   }
 
-  private def nextTokenFor(name: String) = s"Hi $name. Your token is: ${config.tokenManager.nextToken}"
+  private def nextTokenFor(name: String) = s"Hi $name. Your token is: ${tokenGenerator.nextToken}"
 }
 

@@ -3,15 +3,15 @@ package di
 import tokens._
 
 trait ConfigDI {
-  val tokenManager: TokenManager
+  val tokenGenerator: TokenGenerator
 }
 
 
 class ProdConfigDI extends ConfigDI {
-  val tokenManager: TokenManager = new RandomTokenManager
+  val tokenGenerator: TokenGenerator = new RandomTokenGenerator
 }
 
 
 class TestConfigDI extends ConfigDI {
-  val tokenManager: TokenManager = new SimpleTokenManager
+  val tokenGenerator: TokenGenerator = new SimpleTokenGenerator
 }
