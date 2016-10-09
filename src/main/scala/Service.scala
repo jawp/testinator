@@ -7,7 +7,6 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.PathMatchers.Segment
 import akka.stream.Materializer
-import com.typesafe.config.Config
 import di.ProductionDependencies._
 import model.HomePage
 import model.Messages._
@@ -18,7 +17,6 @@ trait Service extends Protocols {
   implicit val system: ActorSystem
   implicit def executor: ExecutionContextExecutor
   implicit val materializer: Materializer
-  def config: Config
 
   val logger: LoggingAdapter
 
