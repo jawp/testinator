@@ -31,13 +31,13 @@ class ServiceSpec extends FreeSpec with Matchers with ScalatestRouteTest with Se
       Get(s"/startTest/$name") ~> routes ~> check {
         status shouldBe OK
         contentType shouldBe `text/plain(UTF-8)`
-        responseAs[String] shouldEqual "Hi " + name + s". Your token is: John_0"
+        responseAs[String] shouldEqual "Hi " + name + s". Your token is: 0"
       }
 
       Get(s"/startTest/$name") ~> routes ~> check {
         status shouldBe OK
         contentType shouldBe `text/plain(UTF-8)`
-        responseAs[String] shouldEqual "Hi " + name + s". Your token is: John_1"
+        responseAs[String] shouldEqual "Hi " + name + s". Your token is: 1"
       }
 
     }

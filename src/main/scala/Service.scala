@@ -1,5 +1,3 @@
-import java.util.concurrent.atomic.AtomicInteger
-
 import akka.actor.ActorSystem
 import akka.event.LoggingAdapter
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
@@ -10,6 +8,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.PathMatchers.Segment
 import akka.stream.Materializer
 import com.typesafe.config.Config
+import di.ProductionDependencies._
 import model.HomePage
 import model.Messages._
 
@@ -34,9 +33,7 @@ trait Service extends Protocols {
       } ~
         pathPrefix("startTest") {
           (get & path(Segment)) { name =>
-            complete {
-              s"Hi " + name + s". Your token is: ${TokenManager.newTokenFor(name)}"
-            }
+            complete {nextTokenFor(name)}
           }
         } ~
         pathPrefix("name") {
@@ -51,13 +48,7 @@ trait Service extends Protocols {
         }
     }
   }
+
+  private def nextTokenFor(name: String) = s"Hi $name. Your token is: ${tokenManager.nextToken}"
 }
 
-object TokenManager extends {
-
-  def newTokenFor(name: String): String = s"${name}_$newToken"
-
-  private val tokenGenerator = new AtomicInteger()
-  private def newToken = tokenGenerator.getAndIncrement()
-
-}
