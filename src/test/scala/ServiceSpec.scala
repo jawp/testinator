@@ -5,29 +5,29 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import model.HomePage
 import org.scalatest._
 
-class ServiceSpec extends FreeSpec with Matchers with ScalatestRouteTest with Service {
+class ServiceSpec extends FreeSpec with MustMatchers with ScalatestRouteTest with Service {
 
   "Testinator should " - {
 
     "show home page" in {
       Get("/") ~> routes ~> check {
-        status shouldBe OK
-        contentType shouldBe `text/xml(UTF-8)`
-        responseAs[String] shouldEqual HomePage.content.mkString
+        status mustBe OK
+        contentType mustBe `text/xml(UTF-8)`
+        responseAs[String] mustBe HomePage.content.mkString
       }
     }
 
     "return new token" in {
       Get(s"/startTest/$name") ~> routes ~> check {
-        status shouldBe OK
-        contentType shouldBe `text/plain(UTF-8)`
-        responseAs[String] shouldEqual "Hi " + name + s". Your token is: 0"
+        status mustBe OK
+        contentType mustBe `text/plain(UTF-8)`
+        responseAs[String] mustBe "Hi " + name + s". Your token is: 0"
       }
 
       Get(s"/startTest/$name") ~> routes ~> check {
-        status shouldBe OK
-        contentType shouldBe `text/plain(UTF-8)`
-        responseAs[String] shouldEqual "Hi " + name + s". Your token is: 1"
+        status mustBe OK
+        contentType mustBe `text/plain(UTF-8)`
+        responseAs[String] mustBe "Hi " + name + s". Your token is: 1"
       }
 
     }
