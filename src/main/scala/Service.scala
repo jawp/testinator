@@ -6,9 +6,8 @@ import akka.http.scaladsl.server.PathMatchers.Segment
 import akka.stream.Materializer
 import di.ConfigDI
 import model.HomePage
-import model.Messages._
 
-abstract class Service(config: ConfigDI) extends Protocols {
+abstract class Service(config: ConfigDI) {
   import config._
 
   implicit val system: ActorSystem
