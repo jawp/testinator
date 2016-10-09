@@ -48,5 +48,4 @@ class ServiceSpec extends FreeSpec with Matchers with ScalatestRouteTest with Se
 
   override val logger = NoLogging
   override def testConfigSource = "akka.loglevel = WARNING"
-  override def config = testConfig
 }
