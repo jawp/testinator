@@ -12,12 +12,8 @@ master branch auto-deployed to:
 
 https://testinator-pro.herokuapp.com
 
-https://testinator-pro.herokuapp.com/name/JAWP
-
 **UAT:**
 
 development branch auto-deployed to:
 
 http://testinator-pro-uat.herokuapp.com
-
-http://testinator-pro-uat.herokuapp.com/name/JAWP

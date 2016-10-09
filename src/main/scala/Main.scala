@@ -9,7 +9,6 @@ object Main extends App with Service {
   val config = ConfigFactory.load()
 
   override implicit val system = ActorSystem()
-  override implicit val executor = system.dispatcher
   override implicit val materializer = ActorMaterializer()
   override val logger = Logging(system, getClass)
 
