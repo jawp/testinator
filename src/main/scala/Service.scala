@@ -1,3 +1,5 @@
+import java.util.concurrent.atomic.AtomicInteger
+
 import akka.actor.ActorSystem
 import akka.event.LoggingAdapter
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
@@ -28,10 +30,15 @@ trait Service extends Protocols {
   val routes = {
     logRequestResult("akka-http-microservice") {
       path("") {
-        get {
-          complete(HomePage.content)
-        }
+        get(complete(HomePage.content))
       } ~
+        pathPrefix("startTest") {
+          (get & path(Segment)) { name =>
+            complete {
+              s"Hi " + name + s". Your token is: ${TokenManager.newTokenFor(name)}"
+            }
+          }
+        } ~
         pathPrefix("name") {
           (get & path(Segment)) { name =>
             complete {
@@ -44,4 +51,13 @@ trait Service extends Protocols {
         }
     }
   }
+}
+
+object TokenManager extends {
+
+  def newTokenFor(name: String): String = s"${name}_$newToken"
+
+  private val tokenGenerator = new AtomicInteger()
+  private def newToken = tokenGenerator.getAndIncrement()
+
 }
