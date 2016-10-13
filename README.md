@@ -1,4 +1,14 @@
-# testinator
+# The testinator PRO
+
+## Build status
+
+| Branche  |      Status |
+|----------|-------------|
+| master   |  [![Build Status](https://travis-ci.org/jawp/testinator.svg?branch=master)](https://travis-ci.org/jawp/testinator) |
+| development|[![Build Status](https://travis-ci.org/jawp/testinator.svg?branch=development)](https://travis-ci.org/jawp/testinator)  |
+
+
+## Heroku pipelines
 
 **Simple pipeline:**
 
