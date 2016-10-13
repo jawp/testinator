@@ -1,17 +1,20 @@
+package service
+
 import akka.actor.ActorSystem
 import akka.event.LoggingAdapter
+import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshallers.xml.ScalaXmlSupport._
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.PathMatchers.Segment
 import akka.stream.Materializer
-import di.ConfigDI
 import model.HomePage
+import tokens.TokenGenerator
 
-abstract class Service(config: ConfigDI) {
-  import config._
-
-  implicit val system: ActorSystem
+abstract class Service(tokenGenerator: TokenGenerator)(
+  implicit val system: ActorSystem,
   implicit val materializer: Materializer
+) {
+
+  def start(host: String, port: Int) = Http().bindAndHandle(routes, host, port)
 
   val logger: LoggingAdapter
 
@@ -22,7 +25,9 @@ abstract class Service(config: ConfigDI) {
       } ~
         pathPrefix("startTest") {
           (get & path(Segment)) { name =>
-            complete {nextTokenFor(name)}
+            complete {
+              nextTokenFor(name)
+            }
           }
         }
     }

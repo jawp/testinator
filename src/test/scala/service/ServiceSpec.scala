@@ -1,9 +1,8 @@
-import akka.actor.ActorSystem
-import akka.event.NoLogging
+package service
+
 import akka.http.scaladsl.model.ContentTypes._
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import akka.stream.ActorMaterializer
 import di._
 import model.HomePage
 import org.scalatest._
@@ -39,12 +38,7 @@ class ServiceSpec extends FreeSpec with MustMatchers with ScalatestRouteTest {
   class Fixture {
     val name = "John"
 
-    val service = new Service(new TestConfigDI) {
-      override implicit val system: ActorSystem = ActorSystem("test")
-      override implicit val materializer: ActorMaterializer = ActorMaterializer()
-      override val logger = NoLogging
-    }
-    val routes = service.routes
+    val routes = TestModule.service.routes
   }
 
 }
