@@ -1,30 +1,35 @@
 package scores
 
+import tokens._
 
-trait ScoreManager {
-  def nextQuestion(token: Token): String
-}
 
-class SimpleScoreManager(correctTokens: List[Token], maxQuestions: Int) extends ScoreManager {
-  var i = 0
+class ScoreManager(tokenGenerator: TokenGenerator, maxQuestions: Int) {
 
-  def nextQuestion(token: Token) =
-    if (isKnown(token)) {
-      i += 1
-      s"what is $i"
-    } else "Broken token: " + token
+  private val scores = collection.mutable.Map[Token, Int]()
 
-  def answer(token: Token, answer: String) =
-    if (isKnown(token)) {
-      if (isCorrect(answer)) {
-        if (isFinished) "You have finished" else "pass"
+  def nextToken(name: String): Token = {
+    //todo generate token based on name
+    val nextToken = tokenGenerator.nextToken
+    scores.getOrElseUpdate(nextToken, 0)
+    //todo remove old tokens for name ?
+    nextToken
+  }
+
+  def nextQuestion(token: Token) = scores.get(token) match {
+    case Some(score) =>
+      scores(token) = score + 1
+      s"what is ${score + 1}"
+    case None => "Broken token: " + token
+  }
+
+  def answer(token: Token, answer: String) = scores.get(token) match {
+    case Some(score) =>
+      if (isCorrect(token, answer)) {
+        if (isFinished(token)) "You have finished" else "pass"
       } else "fail"
-    } else "Broken token: " + token
+    case None => "Broken token: " + token
+  }
 
-  private def isCorrect(answer: String) = answer == s"$i"
-  private def isFinished = i >= maxQuestions
-  private def isKnown(token: Token) = correctTokens.contains(token)
-
+  private def isCorrect(token: Token, answer: String) = answer == s"${scores(token)}"
+  private def isFinished(token: Token) = scores(token) >= maxQuestions
 }
-
-case class Token(value: String)

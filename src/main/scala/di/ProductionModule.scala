@@ -5,6 +5,7 @@ import akka.event.Logging
 import akka.stream.ActorMaterializer
 import app.Main
 import com.typesafe.config.ConfigFactory
+import scores.ScoreManager
 import service.Service
 import tokens._
 
@@ -17,7 +18,9 @@ object ProductionModule {
 
   val tokenGenerator = new RandomTokenGenerator
 
-  val service = new Service(tokenGenerator) {
+  val scoreManager = new ScoreManager(tokenGenerator, 10)
+
+  val service = new Service(scoreManager) {
     override val logger = Logging(system, getClass)
   }
 

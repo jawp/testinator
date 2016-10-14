@@ -7,9 +7,9 @@ import akka.http.scaladsl.marshallers.xml.ScalaXmlSupport._
 import akka.http.scaladsl.server.Directives._
 import akka.stream.Materializer
 import model.HomePage
-import tokens.TokenGenerator
+import scores.ScoreManager
 
-abstract class Service(tokenGenerator: TokenGenerator)(
+abstract class Service(scoreManager: ScoreManager)(
   implicit val system: ActorSystem,
   implicit val materializer: Materializer
 ) {
@@ -33,6 +33,6 @@ abstract class Service(tokenGenerator: TokenGenerator)(
     }
   }
 
-  private def nextTokenFor(name: String) = s"Hi $name. Your token is: ${tokenGenerator.nextToken}"
+  private def nextTokenFor(name: String) = s"Hi $name. Your token is: ${scoreManager.nextToken(name).value}"
 }
 

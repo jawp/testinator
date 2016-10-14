@@ -1,45 +1,79 @@
 package scores
 
 import org.scalatest._
+import tokens.{SimpleTokenGenerator, Token}
 
 class ScoreManagerSpec extends FreeSpec with MustMatchers {
 
-  "for correct token" - {
-    "generate next questions, then finish" in new Fixture {
-      nextQuestion(token1) mustBe "what is 1"
-      answer(token1,"1") mustBe "pass"
+  "for token obtained" - {
 
-      nextQuestion(token1) mustBe "what is 2"
-      answer(token1, "2") mustBe "pass"
+    "when question is known" - {
 
-      nextQuestion(token1) mustBe "what is 3"
-      answer(token1, "3") mustBe "You have finished"
+      "finish successfully" in new Fixture {
+        val token = nextToken(smith)
+        nextQuestion(token) mustBe "what is 1"
+        answer(token, "1") mustBe "pass"
+
+        nextQuestion(token) mustBe "what is 2"
+        answer(token, "2") mustBe "You have finished"
+      }
+
+      "finish successfully (regardless other tokens activities)" in new Fixture {
+        val token = nextToken(smith)
+        val token2 = nextToken(johnson)
+
+        nextQuestion(token) mustBe "what is 1"
+        answer(token, "1") mustBe "pass"
+
+        nextQuestion(token2) mustBe "what is 1"
+        answer(token2, "anyWrongAnswer") mustBe "fail"
+
+        nextQuestion(token) mustBe "what is 2"
+        answer(token, "2") mustBe "You have finished"
+      }
+
+      "fail before finishing" in new Fixture {
+        val token = nextToken(smith)
+        nextQuestion(token) mustBe "what is 1"
+        answer(token, "1") mustBe "pass"
+
+        nextQuestion(token) mustBe "what is 2"
+        answer(token, "wrongAnswer") mustBe "fail"
+      }
     }
 
-    "generate next questions, then fail" in new Fixture {
-      nextQuestion(token1) mustBe "what is 1"
-      answer(token1, "1") mustBe "pass"
+    "when question is unknown" - {
 
-      nextQuestion(token1) mustBe "what is 2"
-      answer(token1, "wrongAnswer") mustBe "fail"
+      "don't accept any answer" in new Fixture {
+        pending
+        val token = nextToken(smith)
+        answer(token, "anyAnswer") mustBe "how can you answer when you don't know question yet?"
+      }
     }
   }
 
-  "for incorrect token" - {
+  "for no token obtained" - {
+
     "don't generate question" in new Fixture {
       nextQuestion(badToken) mustBe s"Broken token: $badToken"
     }
 
-    "don't accept answer" in new Fixture {
+    "don't accept any answer" in new Fixture {
       answer(badToken, "anyAnswer") mustBe s"Broken token: $badToken"
+    }
+
+    "generate next token each time" in new Fixture {
+      nextToken(smith) mustBe Token("0")
+      nextToken(smith) mustBe Token("1")
+      nextToken(smith) mustBe Token("2")
     }
   }
 
-  class Fixture extends SimpleScoreManager(token1 :: token2 :: Nil, 3)
+  class Fixture extends ScoreManager(new SimpleTokenGenerator, 2)
 
-  lazy val token1 = Token("token_1")
-  lazy val token2 = Token("token_2")
+  private val badToken = Token("anyIncorrectToken")
 
-  lazy val badToken = Token("anyIncorrectToken")
+  private val smith = "smith"
+  private val johnson = "johnson"
 
 }
