@@ -9,14 +9,22 @@ class SimpleScoreManager(correctTokens: List[Token], maxQuestions: Int) extends 
   var i = 0
 
   def nextQuestion(token: Token) =
-    if (correctTokens.contains(token)) {
+    if (isKnown(token)) {
       i += 1
       s"what is $i"
     } else throw new RuntimeException(s"unknown token $token")
 
-  def answer(answer: String) = if(isFinished) "You have finished" else "pass"
+  def answer(token: Token, answer: String) =
+    if (isKnown(token)) {
+      if (isCorrect(answer)) {
+        if (isFinished) "You have finished" else "pass"
+      } else "fail"
+    } else throw new RuntimeException(s"unknown token $token")
 
+  private def isCorrect(answer: String) = answer == s"$i"
   private def isFinished = i >= maxQuestions
+  private def isKnown(token: Token) = correctTokens.contains(token)
+
 }
 
 case class Token(value: String)
