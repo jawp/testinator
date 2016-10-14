@@ -2,13 +2,13 @@ package scores
 
 
 trait ScoreManager {
-  def nextQuestion(token: String): String
+  def nextQuestion(token: Token): String
 }
 
-class SimpleScoreManager(correctTokens: List[String], maxQuestions: Int) extends ScoreManager {
+class SimpleScoreManager(correctTokens: List[Token], maxQuestions: Int) extends ScoreManager {
   var i = 0
 
-  def nextQuestion(token: String) =
+  def nextQuestion(token: Token) =
     if (correctTokens.contains(token)) {
       i += 1
       s"what is $i"
@@ -18,3 +18,5 @@ class SimpleScoreManager(correctTokens: List[String], maxQuestions: Int) extends
 
   private def isFinished = i >= maxQuestions
 }
+
+case class Token(value: String)
