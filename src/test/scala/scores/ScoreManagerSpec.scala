@@ -27,15 +27,11 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
 
   "for incorrect token" - {
     "don't generate question" in new Fixture {
-      intercept[RuntimeException] {
-        nextQuestion(badToken)
-      }.getMessage mustBe s"unknown token $badToken"
+      nextQuestion(badToken) mustBe s"Broken token: $badToken"
     }
 
     "don't accept answer" in new Fixture {
-      intercept[RuntimeException] {
-        answer(badToken, "anyAnswer")
-      }.getMessage mustBe s"unknown token $badToken"
+      answer(badToken, "anyAnswer") mustBe s"Broken token: $badToken"
     }
   }
 
