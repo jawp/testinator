@@ -5,7 +5,7 @@ trait ScoreManager {
   def nextQuestion(token: String): String
 }
 
-class SimpleScoreManager(correctTokens: List[String], questions: Int) extends ScoreManager {
+class SimpleScoreManager(correctTokens: List[String], maxQuestions: Int) extends ScoreManager {
   var i = 0
 
   def nextQuestion(token: String) =
@@ -13,4 +13,8 @@ class SimpleScoreManager(correctTokens: List[String], questions: Int) extends Sc
       i += 1
       s"what is $i"
     } else throw new RuntimeException(s"unknown token $token")
+
+  def answer(answer: String) = if(isFinished) "You have finished" else "pass"
+
+  private def isFinished = i >= maxQuestions
 }
