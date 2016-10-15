@@ -9,3 +9,5 @@ score manager - after failure - don't generate questions (token spoilt)
 
 score manager - tokens - generate token based on name
 score manager - tokens - remove old token after creating new for the same name
+
+score manager - hide access to scores behind actor ( to secure multi-thread access)
