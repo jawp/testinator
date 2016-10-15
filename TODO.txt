@@ -1,3 +1,4 @@
+score manager - after question generated - don't generate another if first one is not responded
 
 
 score manager - after failure - don't accept answers (token spoilt)
