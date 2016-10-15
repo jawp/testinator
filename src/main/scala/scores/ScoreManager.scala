@@ -25,7 +25,7 @@ class ScoreManager(tokenGenerator: TokenGenerator, maxQuestions: Int) {
     case Some(ScoreCard(_, None)) => "There's no pending question ..."
     case Some(card) =>
       if (isCorrect(token, answer)) {
-        scoreCards(token) = ScoreCard(card.score + 1, card.question)
+        scoreCards(token) = ScoreCard(card.score + 1, None)
         if (isFinished(card)) "You have finished" else "pass"
       } else "fail"
     case None => "Broken token: " + token

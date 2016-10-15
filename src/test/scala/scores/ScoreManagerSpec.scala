@@ -40,6 +40,16 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
         nextQuestion(token) mustBe "what is 1 ?"
         answer(token, "wrongAnswer") mustBe "fail"
       }
+
+      "after pass" - {
+        "invalid question" in new Fixture {
+          val token = nextToken(smith)
+          nextQuestion(token) mustBe "what is 0 ?"
+          answer(token, "0") mustBe "pass"
+
+          answer(token, "anyAnswer") mustBe "There's no pending question ..."
+        }
+      }
     }
 
     "when question is unknown" - {

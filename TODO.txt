@@ -1,5 +1,4 @@
 
-score manager - when question is answered - invalid question
 
 score manager - after finish  - don't accept answers (expire token)
 score manager - after finish  - don't generate questions (expire token)
