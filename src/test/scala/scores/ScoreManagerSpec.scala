@@ -42,13 +42,38 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
       }
 
       "after pass" - {
-        "invalid question" in new Fixture {
+        "question should expire" in new Fixture {
           val token = nextToken(smith)
           nextQuestion(token) mustBe "what is 0 ?"
           answer(token, "0") mustBe "pass"
 
           answer(token, "anyAnswer") mustBe "There's no pending question ..."
         }
+      }
+
+      "after finish" - {
+        "don't accept answers" in new Fixture {
+          val token = nextToken(smith)
+          nextQuestion(token) mustBe "what is 0 ?"
+          answer(token, "0") mustBe "pass"
+
+          nextQuestion(token) mustBe "what is 1 ?"
+          answer(token, "1") mustBe "You have finished"
+
+          answer(token, "anyAnswer") mustBe "Test is complete. Generate a new Token if you want to restart"
+        }
+
+        "don't generate questions" in new Fixture {
+          val token = nextToken(smith)
+          nextQuestion(token) mustBe "what is 0 ?"
+          answer(token, "0") mustBe "pass"
+
+          nextQuestion(token) mustBe "what is 1 ?"
+          answer(token, "1") mustBe "You have finished"
+
+          nextQuestion(token) mustBe "Test is complete. Generate a new Token if you want to restart"
+        }
+
       }
     }
 

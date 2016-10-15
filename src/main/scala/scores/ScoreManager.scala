@@ -14,6 +14,7 @@ class ScoreManager(tokenGenerator: TokenGenerator, maxQuestions: Int) {
   }
 
   def nextQuestion(token: Token): String = scoreCards.get(token) match {
+    case Some(card) if card.isComplete => "Test is complete. Generate a new Token if you want to restart"
     case Some(card) =>
       val question = Question(s"what is ${card.score} ?")
       scoreCards(token) = ScoreCard(card.score, Some(question))
@@ -22,20 +23,23 @@ class ScoreManager(tokenGenerator: TokenGenerator, maxQuestions: Int) {
   }
 
   def answer(token: Token, answer: String): String = scoreCards.get(token) match {
+    case Some(card) if card.isComplete => "Test is complete. Generate a new Token if you want to restart"
     case Some(ScoreCard(_, None)) => "There's no pending question ..."
     case Some(card) =>
       if (isCorrect(token, answer)) {
-        scoreCards(token) = ScoreCard(card.score + 1, None)
-        if (isFinished(card)) "You have finished" else "pass"
+        val newCard = ScoreCard(card.score + 1, None)
+        scoreCards(token) = newCard
+        if (newCard.isComplete) "You have finished" else "pass"
       } else "fail"
     case None => "Broken token: " + token
   }
 
   private def isCorrect(token: Token, answer: String) = answer == s"${scoreCards(token).score}"
 
-  private def isFinished(card: ScoreCard) = card.score + 1 >= maxQuestions
+
+  case class ScoreCard(score: Int = 0, question: Option[Question] = None){
+    def isComplete = score >= maxQuestions
+  }
+  case class Question(value: String)
 }
 
-case class ScoreCard(score: Int = 0, question: Option[Question] = None)
-
-case class Question(value: String)

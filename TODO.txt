@@ -1,8 +1,5 @@
 
 
-score manager - after finish  - don't accept answers (expire token)
-score manager - after finish  - don't generate questions (expire token)
-
 score manager - after failure - don't accept answers (token spoilt)
 score manager - after failure - don't generate questions (token spoilt)
 
