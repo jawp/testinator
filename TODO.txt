@@ -1,10 +1,12 @@
-score manager - after question generated - don't generate another if first one is not responded
 
+question generator - add random operators to RealQuestionGenerator
 
 score manager - after failure - don't accept answers (token spoilt)
 score manager - after failure - don't generate questions (token spoilt)
 
 score manager - tokens - generate token based on name
 score manager - tokens - remove old token after creating new for the same name
+
+score manager - shall we spoil token when nextQuestion is called a couple of times in a row, without answering ?
 
 score manager - hide access to scores behind actor ( to secure multi-thread access)

@@ -1,5 +1,6 @@
 package scores
 
+import questions.{QuestionAndAnswer, QuestionGenerator}
 import tokens._
 
 object Messages {
@@ -10,7 +11,7 @@ object Messages {
   def broken(token: Token) = "Broken token: " + token.value
 }
 
-class ScoreManager(tokenGenerator: TokenGenerator, maxQuestions: Int) {
+class ScoreManager(tokenGenerator: TokenGenerator, questionGenerator: QuestionGenerator, maxQuestions: Int) {
   import Messages._
 
   private val scoreCards = collection.mutable.Map[Token, ScoreCard]()
@@ -23,30 +24,30 @@ class ScoreManager(tokenGenerator: TokenGenerator, maxQuestions: Int) {
 
   def nextQuestion(token: Token): String = scoreCards.get(token) match {
     case Some(card) if card.isComplete => testComplete
+    case Some(ScoreCard(_, Some(q))) => q.question
     case Some(card) =>
-      val question = Question(s"what is ${card.score} ?")
+      val question = questionGenerator.next
       scoreCards(token) = ScoreCard(card.score, Some(question))
-      question.value
+      question.question
     case None => broken(token)
   }
 
   def answer(token: Token, answer: String): String = scoreCards.get(token) match {
     case Some(card) if card.isComplete => testComplete
     case Some(ScoreCard(_, None)) => noQuestion
-    case Some(card) =>
-      if (isCorrect(token, answer)) {
-        val newCard = ScoreCard(card.score + 1, None)
+    case Some(ScoreCard(score, Some(question))) =>
+      if (isCorrect(question, answer)) {
+        val newCard = ScoreCard(score + 1, None)
         scoreCards(token) = newCard
         if (newCard.isComplete) finished else pass
       } else "fail"
     case None => broken(token)
   }
 
-  private def isCorrect(token: Token, answer: String) = answer == s"${scoreCards(token).score}"
+  private def isCorrect(question: QuestionAndAnswer, answer: String) = answer == s"${question.expectedAnswer}"
 
-  case class ScoreCard(score: Int = 0, question: Option[Question] = None) {
+  case class ScoreCard(score: Int = 0, question: Option[QuestionAndAnswer] = None) {
     def isComplete = score >= maxQuestions
   }
-  case class Question(value: String)
 }
 

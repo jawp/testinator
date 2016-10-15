@@ -1,6 +1,7 @@
 package scores
 
 import org.scalatest._
+import questions.SimpleQuestionGenerator
 import tokens.{SimpleTokenGenerator, Token}
 
 class ScoreManagerSpec extends FreeSpec with MustMatchers {
@@ -25,11 +26,11 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
         nextQuestion(token) mustBe "what is 0 ?"
         answer(token, "0") mustBe "pass"
 
-        nextQuestion(otherToken) mustBe "what is 0 ?"
+        nextQuestion(otherToken) mustBe "what is 1 ?"
         answer(otherToken, "anyWrongAnswer") mustBe "fail"
 
-        nextQuestion(token) mustBe "what is 1 ?"
-        answer(token, "1") mustBe "You have finished"
+        nextQuestion(token) mustBe "what is 2 ?"
+        answer(token, "2") mustBe "You have finished"
       }
 
       "fail at wrong answer" in new Fixture {
@@ -39,6 +40,16 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
 
         nextQuestion(token) mustBe "what is 1 ?"
         answer(token, "wrongAnswer") mustBe "fail"
+      }
+
+      "don't generate other questions until first one is answered" in new Fixture {
+        val token = nextToken(smith)
+        nextQuestion(token) mustBe "what is 0 ?"
+        nextQuestion(token) mustBe "what is 0 ?"
+        nextQuestion(token) mustBe "what is 0 ?"
+        answer(token, "0") mustBe "pass"
+
+        nextQuestion(token) mustBe "what is 1 ?"
       }
 
       "after pass" - {
@@ -103,7 +114,7 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
     }
   }
 
-  class Fixture extends ScoreManager(new SimpleTokenGenerator, 2)
+  class Fixture extends ScoreManager(new SimpleTokenGenerator, new SimpleQuestionGenerator, 2)
 
   private val badToken = Token("anyIncorrectToken")
 

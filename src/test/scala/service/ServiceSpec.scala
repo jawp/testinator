@@ -6,6 +6,7 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import model.HomePage
 import org.scalatest._
+import questions.SimpleQuestionGenerator
 import scores.ScoreManager
 import tokens.SimpleTokenGenerator
 
@@ -40,7 +41,8 @@ class ServiceSpec extends FreeSpec with MustMatchers with ScalatestRouteTest {
   class Fixture {
 
     val tokenGenerator = new SimpleTokenGenerator
-    val scoreManager = new ScoreManager(tokenGenerator, 10)
+    val questionGenerator = new SimpleQuestionGenerator
+    val scoreManager = new ScoreManager(tokenGenerator, questionGenerator, 10)
     val service = new Service(scoreManager) {
       override val logger = NoLogging
     }
