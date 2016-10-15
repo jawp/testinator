@@ -14,15 +14,14 @@ class ScoreManager(tokenGenerator: TokenGenerator, maxQuestions: Int) {
   }
 
   def nextQuestion(token: Token) = scores.get(token) match {
-    case Some(score) =>
-      scores(token) = score + 1
-      s"what is ${score + 1}"
+    case Some(score) => s"what is ${score} ?"
     case None => "Broken token: " + token
   }
 
   def answer(token: Token, answer: String) = scores.get(token) match {
     case Some(score) =>
       if (isCorrect(token, answer)) {
+        scores(token) += 1
         if (isFinished(token)) "You have finished" else "pass"
       } else "fail"
     case None => "Broken token: " + token
