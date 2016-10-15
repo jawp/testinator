@@ -8,10 +8,8 @@ class ScoreManager(tokenGenerator: TokenGenerator, maxQuestions: Int) {
   private val scores = collection.mutable.Map[Token, Int]()
 
   def nextToken(name: String): Token = {
-    //todo generate token based on name
     val nextToken = tokenGenerator.nextToken
     scores.getOrElseUpdate(nextToken, 0)
-    //todo remove old tokens for name ?
     nextToken
   }
 
