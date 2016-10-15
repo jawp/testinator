@@ -45,9 +45,8 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
     "when question is unknown" - {
 
       "don't accept any answer" in new Fixture {
-        pending
         val token = nextToken(smith)
-        answer(token, "anyAnswer") mustBe "how can you answer when you don't know question yet?"
+        answer(token, "anyAnswer") mustBe "How can you answer if there's no question ?"
       }
     }
   }

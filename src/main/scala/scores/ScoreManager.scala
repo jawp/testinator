@@ -13,12 +13,16 @@ class ScoreManager(tokenGenerator: TokenGenerator, maxQuestions: Int) {
     nextToken
   }
 
-  def nextQuestion(token: Token) = scoreCards.get(token) match {
-    case Some(card) => s"what is ${card.score} ?"
+  def nextQuestion(token: Token): String = scoreCards.get(token) match {
+    case Some(card) =>
+      val question = Question(s"what is ${card.score} ?")
+      scoreCards(token) = ScoreCard(card.score, Some(question))
+      question.value
     case None => "Broken token: " + token
   }
 
-  def answer(token: Token, answer: String) = scoreCards.get(token) match {
+  def answer(token: Token, answer: String): String = scoreCards.get(token) match {
+    case Some(ScoreCard(_, None)) => "How can you answer if there's no question ?"
     case Some(card) =>
       if (isCorrect(token, answer)) {
         scoreCards(token) = ScoreCard(card.score + 1, card.question)
@@ -33,4 +37,5 @@ class ScoreManager(tokenGenerator: TokenGenerator, maxQuestions: Int) {
 }
 
 case class ScoreCard(score: Int = 0, question: Option[Question] = None)
+
 case class Question(value: String)

@@ -1,5 +1,4 @@
 
-score manager - when question is unknown - don't accept any answer
 score manager - when question is answered - invalid question
 
 score manager - after finish  - don't accept answers (expire token)
