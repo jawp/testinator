@@ -22,7 +22,7 @@ class ScoreManager(tokenGenerator: TokenGenerator, maxQuestions: Int) {
   }
 
   def answer(token: Token, answer: String): String = scoreCards.get(token) match {
-    case Some(ScoreCard(_, None)) => "How can you answer if there's no question ?"
+    case Some(ScoreCard(_, None)) => "There's no pending question ..."
     case Some(card) =>
       if (isCorrect(token, answer)) {
         scoreCards(token) = ScoreCard(card.score + 1, card.question)

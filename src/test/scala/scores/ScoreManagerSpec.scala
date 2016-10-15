@@ -46,7 +46,7 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
 
       "don't accept any answer" in new Fixture {
         val token = nextToken(smith)
-        answer(token, "anyAnswer") mustBe "How can you answer if there's no question ?"
+        answer(token, "anyAnswer") mustBe "There's no pending question ..."
       }
     }
   }
