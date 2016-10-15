@@ -89,11 +89,11 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
   "for no token obtained" - {
 
     "don't generate question" in new Fixture {
-      nextQuestion(badToken) mustBe s"Broken token: $badToken"
+      nextQuestion(badToken) mustBe s"Broken token: ${badToken.value}"
     }
 
     "don't accept any answer" in new Fixture {
-      answer(badToken, "anyAnswer") mustBe s"Broken token: $badToken"
+      answer(badToken, "anyAnswer") mustBe s"Broken token: ${badToken.value}"
     }
 
     "generate next token each time" in new Fixture {
