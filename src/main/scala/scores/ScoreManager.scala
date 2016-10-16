@@ -14,7 +14,7 @@ class ScoreManager(tokenGenerator: TokenGenerator, questionGenerator: QuestionGe
   }
 
   def nextQuestion(token: Token): String = withScoreCard(token) {
-    case ScoreCard(_, Some(q), _) => q.question
+    case ScoreCard(_, Some(q), _) => s"You already got the question, but OK, once again: ${q.question}"
     case ScoreCard(score, None, _) =>
       val question = questionGenerator.next
       scoreCards(token) = ScoreCard(score, Some(question))

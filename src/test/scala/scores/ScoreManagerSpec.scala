@@ -45,8 +45,8 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
       "don't generate other questions until first one is answered" in new Fixture {
         val token = nextToken(smith)
         nextQuestion(token) mustBe "what is 0 ?"
-        nextQuestion(token) mustBe "what is 0 ?"
-        nextQuestion(token) mustBe "what is 0 ?"
+        nextQuestion(token) mustBe "You already got the question, but OK, once again: what is 0 ?"
+        nextQuestion(token) mustBe "You already got the question, but OK, once again: what is 0 ?"
         answer(token, "0") mustBe "pass"
 
         nextQuestion(token) mustBe "what is 1 ?"
