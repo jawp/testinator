@@ -71,7 +71,15 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
           nextQuestion(token) mustBe "what is 1 ?"
           answer(token, "1") mustBe "You have finished"
 
-          answer(token, "anyAnswer") mustBe "Test is complete. Generate a new Token if you want to restart"
+          answer(token, "anyAnswer") mustBe "Test is complete. Please generate a new token if you want to restart"
+
+          val newToken = nextToken(smith)
+          nextQuestion(newToken) mustBe "what is 2 ?"
+          answer(newToken, "2") mustBe "pass"
+
+          nextQuestion(newToken) mustBe "what is 3 ?"
+          answer(newToken, "3") mustBe "You have finished"
+
         }
 
         "don't generate questions" in new Fixture {
@@ -82,7 +90,14 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
           nextQuestion(token) mustBe "what is 1 ?"
           answer(token, "1") mustBe "You have finished"
 
-          nextQuestion(token) mustBe "Test is complete. Generate a new Token if you want to restart"
+          nextQuestion(token) mustBe "Test is complete. Please generate a new token if you want to restart"
+
+          val newToken = nextToken(smith)
+          nextQuestion(newToken) mustBe "what is 2 ?"
+          answer(newToken, "2") mustBe "pass"
+
+          nextQuestion(newToken) mustBe "what is 3 ?"
+          answer(newToken, "3") mustBe "You have finished"
         }
 
       }
@@ -93,14 +108,14 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
           nextQuestion(token) mustBe "what is 0 ?"
           answer(token, "wrongAnswer") mustBe "fail"
 
-          answer(token, "anyAnswer") mustBe "Token is spoilt. Please generate new token to restart."
+          answer(token, "anyAnswer") mustBe "Token is spoilt. Please generate a new token to restart."
         }
         "don't generate questions" in new Fixture {
           val token = nextToken(smith)
           nextQuestion(token) mustBe "what is 0 ?"
           answer(token, "wrongAnswer") mustBe "fail"
 
-          nextQuestion(token) mustBe "Token is spoilt. Please generate new token to restart."
+          nextQuestion(token) mustBe "Token is spoilt. Please generate a new token to restart."
         }
       }
 

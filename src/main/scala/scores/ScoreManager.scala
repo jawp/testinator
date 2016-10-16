@@ -8,9 +8,9 @@ class ScoreManager(tokenGenerator: TokenGenerator, questionGenerator: QuestionGe
   private val scoreCards = collection.mutable.Map[Token, ScoreCard]()
 
   def nextToken(name: String): Token = {
-    val nextToken = tokenGenerator.nextToken
-    scoreCards.getOrElseUpdate(nextToken, ScoreCard())
-    nextToken
+    val newToken = tokenGenerator.nextToken
+    scoreCards.getOrElseUpdate(newToken, ScoreCard())
+    newToken
   }
 
   def nextQuestion(token: Token): String = withValidTokenAndActiveScoreCard(token) {
@@ -42,8 +42,8 @@ class ScoreManager(tokenGenerator: TokenGenerator, questionGenerator: QuestionGe
   }
 
   private def withValidTokenAndActiveScoreCard(token: Token)(f: ScoreCard => String) = scoreCards.get(token) match {
-    case Some(card) if card.isComplete => "Test is complete. Generate a new Token if you want to restart"
-    case Some(card) if card.isSpoilt => "Token is spoilt. Please generate new token to restart."
+    case Some(card) if card.isComplete => "Test is complete. Please generate a new token if you want to restart"
+    case Some(card) if card.isSpoilt => "Token is spoilt. Please generate a new token to restart."
     case Some(card) => f(card)
     case None => "Broken token: " + token.value
   }
