@@ -15,23 +15,30 @@ class ScoreManager(tokenGenerator: TokenGenerator, questionGenerator: QuestionGe
 
   def nextQuestion(token: Token): String = withScoreCard(token) {
     case ScoreCard(_, Some(q), _) => s"You already got the question, but OK, once again: ${q.question}"
-    case ScoreCard(score, None, _) =>
-      val question = questionGenerator.next
-      scoreCards(token) = ScoreCard(score, Some(question))
-      question.question
+    case ScoreCard(score, None, _) => generateNewQuestion(token, score)
   }
 
   def answer(token: Token, answer: String): String = withScoreCard(token) {
     case ScoreCard(_, None, _) => "There's no pending question ..."
-    case ScoreCard(score, Some(question), _) =>
-      if (isCorrect(question, answer)) {
-        val newCard = ScoreCard(score + 1, None)
-        scoreCards(token) = newCard
-        if (newCard.isComplete) "You have finished" else "pass"
-      } else {
-        scoreCards(token) = ScoreCard(score, Some(question), isSpoilt = true)
-        "fail"
-      }
+    case card @ ScoreCard(score, Some(question), _) =>
+      if (isCorrect(question, answer)) scoreUp(token, score) else spoil(token)
+  }
+
+  private def scoreUp(token: Token, score: Int) = {
+    val newCard = ScoreCard(score + 1, None)
+    scoreCards(token) = newCard
+    if (newCard.isComplete) "You have finished" else "pass"
+  }
+
+  private def generateNewQuestion(token: Token, score: Int) = {
+    val qna = questionGenerator.next
+    scoreCards(token) = ScoreCard(score, Some(qna))
+    qna.question
+  }
+
+  private def spoil(token: Token) = {
+    scoreCards(token) = scoreCards(token).copy(isSpoilt = true)
+    "fail"
   }
 
   private def withScoreCard(token: Token)(f: ScoreCard => String) =
