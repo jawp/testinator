@@ -1,5 +1,6 @@
 package scores
 
+import model.Messages._
 import questions.{QuestionAndAnswer, QuestionGenerator}
 import tokens._
 
@@ -19,7 +20,7 @@ class ScoreManager(tokenGenerator: TokenGenerator, questionGenerator: QuestionGe
   }
 
   def answer(token: Token, answer: String): String = withValidTokenAndActiveScoreCard(token) {
-    case ScoreCard(_, None, _) => "There's no pending question ..."
+    case ScoreCard(_, None, _) => noPendingQuestion
     case ScoreCard(score, Some(question), _) =>
       if (question accepts answer) scoreUp(token, score) else spoil(token)
   }
@@ -27,7 +28,7 @@ class ScoreManager(tokenGenerator: TokenGenerator, questionGenerator: QuestionGe
   private def scoreUp(token: Token, score: Int) = {
     val newCard = ScoreCard(score + 1, None)
     scoreCards(token) = newCard
-    if (newCard.isComplete) "You have finished" else "pass"
+    if (newCard.isComplete) youHaveFinished else pass
   }
 
   private def generateNewQuestion(token: Token, score: Int) = {
@@ -38,12 +39,12 @@ class ScoreManager(tokenGenerator: TokenGenerator, questionGenerator: QuestionGe
 
   private def spoil(token: Token) = {
     scoreCards(token) = scoreCards(token).copy(isSpoilt = true)
-    "fail"
+    fail
   }
 
   private def withValidTokenAndActiveScoreCard(token: Token)(f: ScoreCard => String) = scoreCards.get(token) match {
-    case Some(card) if card.isComplete => "Test is complete. Please generate a new token if you want to restart"
-    case Some(card) if card.isSpoilt => "Token is spoilt. Please generate a new token to restart."
+    case Some(card) if card.isComplete => testComplete
+    case Some(card) if card.isSpoilt => tokenSpoilt
     case Some(card) => f(card)
     case None => "Broken token: " + token.value
   }

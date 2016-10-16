@@ -12,6 +12,8 @@ import tokens._
 
 object ProductionModule {
 
+  val numberOfQuestions = 10
+
   implicit val system = ActorSystem("testinator")
   implicit val materializer = ActorMaterializer()
 
@@ -21,7 +23,7 @@ object ProductionModule {
 
   val questionGenerator = new RealQuestionGenerator
 
-  val scoreManager = new ScoreManager(tokenGenerator, questionGenerator, 10)
+  val scoreManager = new ScoreManager(tokenGenerator, questionGenerator, numberOfQuestions)
 
   val service = new Service(scoreManager) {
     override val logger = Logging(system, getClass)
