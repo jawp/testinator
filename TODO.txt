@@ -1,5 +1,10 @@
 
+score manager - move checkAnswer logic to ScoreCard
+score manager - beautifying code and specs
+
 question generator - add random operators to RealQuestionGenerator
+
+http service - finish akka http DSL, to accept all requests
 
 score manager - hide access to scores behind actor ( to secure multi-thread access)
 

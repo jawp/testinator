@@ -117,6 +117,9 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
 
           nextQuestion(token) mustBe s"Broken token: ${token.value}"
           answer(token, "0") mustBe s"Broken token: ${token.value}"
+
+          nextQuestion(anotherToken) mustBe "what is 1 ?"
+          answer(anotherToken, "1") mustBe "pass"
         }
       }
     }
