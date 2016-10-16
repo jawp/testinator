@@ -1,9 +1,6 @@
 
 question generator - add random operators to RealQuestionGenerator
 
-score manager - after failure - don't accept answers (token spoilt)
-score manager - after failure - don't generate questions (token spoilt)
-
 score manager - tokens - generate token based on name
 score manager - tokens - remove old token after creating new for the same name
 

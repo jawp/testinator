@@ -86,6 +86,24 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
         }
 
       }
+
+      "after failure" - {
+        "don't accept answers" in new Fixture {
+          val token = nextToken(smith)
+          nextQuestion(token) mustBe "what is 0 ?"
+          answer(token, "wrongAnswer") mustBe "fail"
+
+          answer(token, "anyAnswer") mustBe "Token is spoilt. Please generate new token to restart."
+        }
+        "don't generate questions" in new Fixture {
+          val token = nextToken(smith)
+          nextQuestion(token) mustBe "what is 0 ?"
+          answer(token, "wrongAnswer") mustBe "fail"
+
+          nextQuestion(token) mustBe "Token is spoilt. Please generate new token to restart."
+        }
+      }
+
     }
 
     "when question is unknown" - {

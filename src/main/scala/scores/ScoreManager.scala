@@ -13,34 +13,38 @@ class ScoreManager(tokenGenerator: TokenGenerator, questionGenerator: QuestionGe
     nextToken
   }
 
-  def nextQuestion(token: Token): String = withUnfinishedScoreCard(token) {
-    case ScoreCard(_, Some(q)) => q.question
-    case ScoreCard(score, None) =>
+  def nextQuestion(token: Token): String = withScoreCard(token) {
+    case ScoreCard(_, Some(q), _) => q.question
+    case ScoreCard(score, None, _) =>
       val question = questionGenerator.next
       scoreCards(token) = ScoreCard(score, Some(question))
       question.question
   }
 
-  def answer(token: Token, answer: String): String = withUnfinishedScoreCard(token) {
-    case ScoreCard(_, None) => "There's no pending question ..."
-    case ScoreCard(score, Some(question)) =>
+  def answer(token: Token, answer: String): String = withScoreCard(token) {
+    case ScoreCard(_, None, _) => "There's no pending question ..."
+    case ScoreCard(score, Some(question), _) =>
       if (isCorrect(question, answer)) {
         val newCard = ScoreCard(score + 1, None)
         scoreCards(token) = newCard
         if (newCard.isComplete) "You have finished" else "pass"
-      } else "fail"
+      } else {
+        scoreCards(token) = ScoreCard(score, Some(question), isSpoilt = true)
+        "fail"
+      }
   }
 
-  private def withUnfinishedScoreCard(token: Token)(f: ScoreCard => String) =
+  private def withScoreCard(token: Token)(f: ScoreCard => String) =
     scoreCards.get(token) match {
       case Some(card) if card.isComplete => "Test is complete. Generate a new Token if you want to restart"
+      case Some(card) if card.isSpoilt => "Token is spoilt. Please generate new token to restart."
       case Some(card) => f(card)
       case None => "Broken token: " + token.value
     }
 
   private def isCorrect(question: QuestionAndAnswer, answer: String) = answer == s"${question.expectedAnswer}"
 
-  case class ScoreCard(score: Int = 0, question: Option[QuestionAndAnswer] = None) {
+  case class ScoreCard(score: Int = 0, question: Option[QuestionAndAnswer] = None, isSpoilt: Boolean = false) {
     def isComplete = score >= maxQuestions
   }
 
