@@ -20,7 +20,7 @@ class ScoreManager(tokenGenerator: TokenGenerator, questionGenerator: QuestionGe
 
   def answer(token: Token, answer: String): String = withScoreCard(token) {
     case ScoreCard(_, None, _) => "There's no pending question ..."
-    case card @ ScoreCard(score, Some(question), _) =>
+    case ScoreCard(score, Some(question), _) =>
       if (isCorrect(question, answer)) scoreUp(token, score) else spoil(token)
   }
 
