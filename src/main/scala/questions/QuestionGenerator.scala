@@ -31,5 +31,5 @@ class RealQuestionGenerator extends QuestionGenerator {
 }
 
 case class QuestionAndAnswer(question: String, expectedAnswer: Int) {
-  def has(answer: String) = answer == s"$expectedAnswer"
+  def accepts(answer: String) = answer == s"$expectedAnswer"
 }
