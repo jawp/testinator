@@ -107,6 +107,18 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
         }
       }
 
+      "after re-generating token" - {
+        "invalid the old one for the same name" in new Fixture{
+          val token = nextToken(smith)
+          nextQuestion(token) mustBe "what is 0 ?"
+          answer(token, "0") mustBe "pass"
+
+          val anotherToken = nextToken(smith)
+
+          nextQuestion(token) mustBe s"Broken token: ${token.value}"
+          answer(token, "0") mustBe s"Broken token: ${token.value}"
+        }
+      }
     }
 
     "when question is unknown" - {
@@ -129,17 +141,16 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
     }
 
     "generate next token each time" in new Fixture {
-      nextToken(smith) mustBe Token("0")
-      nextToken(smith) mustBe Token("1")
-      nextToken(smith) mustBe Token("2")
+      nextToken(smith) mustBe Token("0", smith)
+      nextToken(smith) mustBe Token("1", smith)
+      nextToken(smith) mustBe Token("2", smith)
     }
   }
 
   class Fixture extends ScoreManager(new SimpleTokenGenerator, new SimpleQuestionGenerator, 2)
 
-  private val badToken = Token("anyIncorrectToken")
-
   private val smith = "smith"
   private val johnson = "johnson"
 
+  private val badToken = Token("anyIncorrectToken", smith)
 }
