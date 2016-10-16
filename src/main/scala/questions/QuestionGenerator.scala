@@ -30,4 +30,6 @@ class RealQuestionGenerator extends QuestionGenerator {
   private def nextInt = Random.nextInt(100)
 }
 
-case class QuestionAndAnswer(question: String, expectedAnswer: Int)
+case class QuestionAndAnswer(question: String, expectedAnswer: Int) {
+  def has(answer: String) = answer == s"$expectedAnswer"
+}
