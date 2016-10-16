@@ -10,15 +10,6 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
 
     "when question is known" - {
 
-      "finish after all correct answers" in new Fixture {
-        val token = nextToken(smith)
-        nextQuestion(token) mustBe "what is 0 ?"
-        answer(token, "0") mustBe "pass"
-
-        nextQuestion(token) mustBe "what is 1 ?"
-        answer(token, "1") mustBe "You have finished"
-      }
-
       "finish after all correct answers (regardless other tokens activities)" in new Fixture {
         val token = nextToken(smith)
         val otherToken = nextToken(johnson)
@@ -36,9 +27,6 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
       "fail at wrong answer" in new Fixture {
         val token = nextToken(smith)
         nextQuestion(token) mustBe "what is 0 ?"
-        answer(token, "0") mustBe "pass"
-
-        nextQuestion(token) mustBe "what is 1 ?"
         answer(token, "wrongAnswer") mustBe "fail"
       }
 
