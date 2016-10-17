@@ -6,11 +6,12 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import model.HomePage
 import org.scalatest._
-import questions.SimpleQuestionGenerator
+import org.specs2.mock.Mockito
+import questions.QuestionGenerator
 import scores.ScoreManager
 import tokens.SimpleTokenGenerator
 
-class ServiceSpec extends FreeSpec with MustMatchers with ScalatestRouteTest {
+class ServiceSpec extends FreeSpec with MustMatchers with ScalatestRouteTest with Mockito {
 
   "Testinator should " - {
 
@@ -41,7 +42,7 @@ class ServiceSpec extends FreeSpec with MustMatchers with ScalatestRouteTest {
   class Fixture {
 
     val tokenGenerator = new SimpleTokenGenerator
-    val questionGenerator = new SimpleQuestionGenerator
+    val questionGenerator = mock[QuestionGenerator]
     val scoreManager = new ScoreManager(tokenGenerator, questionGenerator, 10)
     val service = new Service(scoreManager) {
       override val logger = NoLogging

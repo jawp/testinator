@@ -1,25 +1,8 @@
 package questions
 
-import java.util.concurrent.atomic.AtomicInteger
-
 import scala.util.Random
 
-trait QuestionGenerator {
-  def next: QuestionAndAnswer
-}
-
-class SimpleQuestionGenerator extends QuestionGenerator {
-
-  def next: QuestionAndAnswer = {
-    val n = nextInt
-    QuestionAndAnswer(s"what is $n ?", n)
-  }
-
-  private def nextInt = generator.getAndIncrement()
-  private val generator = new AtomicInteger()
-}
-
-class RealQuestionGenerator extends QuestionGenerator {
+class QuestionGenerator {
 
   def next: QuestionAndAnswer = {
     val n1 = nextInt
