@@ -4,7 +4,7 @@ import org.scalatest.{FreeSpec, MustMatchers}
 
 class TokenGeneratorSpec extends FreeSpec with MustMatchers {
 
-  "RandomTokenGenerator" - {
+  "TokenGenerator" - {
     s"generates strings of one size" in new Fixture {
       tokenGenerator.nextTokenFor(smith).value.length mustBe tokenSize
       tokenGenerator.nextTokenFor(smith).value.length mustBe tokenSize
