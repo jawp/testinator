@@ -1,95 +1,95 @@
 package scores
 
 import org.scalatest._
-import questions.SimpleQuestionGenerator
+import org.specs2.mock.Mockito
+import questions.{QuestionAndAnswer, QuestionGenerator}
 import tokens.{SimpleTokenGenerator, Token}
 
-class ScoreManagerSpec extends FreeSpec with MustMatchers {
+class ScoreManagerSpec extends FreeSpec with MustMatchers with Mockito {
 
   "for token generated" - {
 
     "when question is generated" - {
 
       "finish after all correct answers (regardless other tokens activities)" in new Fixture {
-        val token = nextToken(smith)
-        val otherToken = nextToken(johnson)
+        val token = scoreManager.nextToken(smith)
+        val otherToken = scoreManager.nextToken(johnson)
 
-        nextQuestion(token) mustBe "what is 0 ?"
-        answer(token, "0") mustBe "pass"
+        scoreManager.nextQuestion(token) mustBe "what is 1 + 1 ?"
+        scoreManager.answer(token, "2") mustBe "pass"
 
-        nextQuestion(otherToken) mustBe "what is 1 ?"
-        answer(otherToken, "anyWrongAnswer") mustBe "fail"
+        scoreManager.nextQuestion(otherToken) mustBe "what is 1 + 1 ?"
+        scoreManager.answer(otherToken, "anyWrongAnswer") mustBe "fail"
 
-        nextQuestion(token) mustBe "what is 2 ?"
-        answer(token, "2") mustBe "You have finished"
+        scoreManager.nextQuestion(token) mustBe "what is 1 + 1 ?"
+        scoreManager.answer(token, "2") mustBe "You have finished"
       }
 
       "fail at wrong answer and spoil the token" in new Fixture {
-        val token = nextToken(smith)
-        nextQuestion(token) mustBe "what is 0 ?"
-        answer(token, "wrongAnswer") mustBe "fail"
+        val token = scoreManager.nextToken(smith)
+        scoreManager.nextQuestion(token) mustBe "what is 1 + 1 ?"
+        scoreManager.answer(token, "wrongAnswer") mustBe "fail"
 
-        nextQuestion(token) mustBe "Token is spoilt. Please generate a new token to restart."
-        answer(token, "any") mustBe "Token is spoilt. Please generate a new token to restart."
+        scoreManager.nextQuestion(token) mustBe "Token is spoilt. Please generate a new token to restart."
+        scoreManager.answer(token, "any") mustBe "Token is spoilt. Please generate a new token to restart."
       }
 
       "don't generate other questions until first one is answered" in new Fixture {
-        val token = nextToken(smith)
-        nextQuestion(token) mustBe "what is 0 ?"
-        nextQuestion(token) mustBe "You already got the question, but OK, once again: what is 0 ?"
-        nextQuestion(token) mustBe "You already got the question, but OK, once again: what is 0 ?"
-        answer(token, "0") mustBe "pass"
+        val token = scoreManager.nextToken(smith)
+        scoreManager.nextQuestion(token) mustBe "what is 1 + 1 ?"
+        scoreManager.nextQuestion(token) mustBe "You already got the question, but OK, once again: what is 1 + 1 ?"
+        scoreManager.nextQuestion(token) mustBe "You already got the question, but OK, once again: what is 1 + 1 ?"
+        scoreManager.answer(token, "2") mustBe "pass"
 
-        nextQuestion(token) mustBe "what is 1 ?"
+        scoreManager.nextQuestion(token) mustBe "what is 1 + 1 ?"
       }
 
       "after pass" - {
         "question should expire. You should be able to generate a new one" in new Fixture {
-          val token = nextToken(smith)
-          nextQuestion(token) mustBe "what is 0 ?"
-          answer(token, "0") mustBe "pass"
+          val token = scoreManager.nextToken(smith)
+          scoreManager.nextQuestion(token) mustBe "what is 1 + 1 ?"
+          scoreManager.answer(token, "2") mustBe "pass"
 
-          answer(token, "any") mustBe "There's no pending question ..."
+          scoreManager.answer(token, "any") mustBe "There's no pending question ..."
 
-          nextQuestion(token) mustBe "what is 1 ?"
-          answer(token, "1") mustBe "You have finished"
+          scoreManager.nextQuestion(token) mustBe "what is 1 + 1 ?"
+          scoreManager.answer(token, "2") mustBe "You have finished"
         }
       }
 
       "after finish" - {
         "don't accept answers or generate questions. Only a new token makes restart possible" in new Fixture {
-          val token = nextToken(smith)
-          nextQuestion(token) mustBe "what is 0 ?"
-          answer(token, "0") mustBe "pass"
+          val token = scoreManager.nextToken(smith)
+          scoreManager.nextQuestion(token) mustBe "what is 1 + 1 ?"
+          scoreManager.answer(token, "2") mustBe "pass"
 
-          nextQuestion(token) mustBe "what is 1 ?"
-          answer(token, "1") mustBe "You have finished"
+          scoreManager.nextQuestion(token) mustBe "what is 1 + 1 ?"
+          scoreManager.answer(token, "2") mustBe "You have finished"
 
-          answer(token, "any") mustBe "Test is complete. Please generate a new token if you want to restart"
-          nextQuestion(token) mustBe "Test is complete. Please generate a new token if you want to restart"
+          scoreManager.answer(token, "any") mustBe "Test is complete. Please generate a new token if you want to restart"
+          scoreManager.nextQuestion(token) mustBe "Test is complete. Please generate a new token if you want to restart"
 
-          val newToken = nextToken(smith)
-          nextQuestion(newToken) mustBe "what is 2 ?"
-          answer(newToken, "2") mustBe "pass"
+          val newToken = scoreManager.nextToken(smith)
+          scoreManager.nextQuestion(newToken) mustBe "what is 1 + 1 ?"
+          scoreManager.answer(newToken, "2") mustBe "pass"
 
-          nextQuestion(newToken) mustBe "what is 3 ?"
-          answer(newToken, "3") mustBe "You have finished"
+          scoreManager.nextQuestion(newToken) mustBe "what is 1 + 1 ?"
+          scoreManager.answer(newToken, "2") mustBe "You have finished"
         }
-
       }
 
       "after re-generating token" - {
-        "generate and return the new one, but also keep the old one" in new Fixture{
-          val token = nextToken(smith)
-          nextQuestion(token) mustBe "what is 0 ?"
-          answer(token, "0") mustBe "pass"
+        "generate and return the new one, but also keep the old one" in new Fixture {
+          val token = scoreManager.nextToken(smith)
+          scoreManager.nextQuestion(token) mustBe "what is 1 + 1 ?"
+          scoreManager.answer(token, "2") mustBe "pass"
 
-          val anotherToken = nextToken(smith)
-          nextQuestion(anotherToken) mustBe "what is 1 ?"
-          answer(anotherToken, "1") mustBe "pass"
+          val anotherToken = scoreManager.nextToken(smith)
+          scoreManager.nextQuestion(anotherToken) mustBe "what is 1 + 1 ?"
+          scoreManager.answer(anotherToken, "2") mustBe "pass"
 
-          nextQuestion(token) mustBe "what is 2 ?"
-          answer(token, "2") mustBe "You have finished"
+          scoreManager.nextQuestion(token) mustBe "what is 1 + 1 ?"
+          scoreManager.answer(token, "2") mustBe "You have finished"
         }
       }
     }
@@ -97,8 +97,8 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
     "when question is not generated yet" - {
 
       "don't accept any answer" in new Fixture {
-        val token = nextToken(smith)
-        answer(token, "any") mustBe "There's no pending question ..."
+        val token = scoreManager.nextToken(smith)
+        scoreManager.answer(token, "any") mustBe "There's no pending question ..."
       }
     }
   }
@@ -106,21 +106,27 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
   "for no token generated" - {
 
     "don't generate question" in new Fixture {
-      nextQuestion(badToken) mustBe s"Broken token: ${badToken.value}"
+      scoreManager.nextQuestion(badToken) mustBe s"Broken token: ${badToken.value}"
     }
 
     "don't accept any answer" in new Fixture {
-      answer(badToken, "any") mustBe s"Broken token: ${badToken.value}"
+      scoreManager.answer(badToken, "any") mustBe s"Broken token: ${badToken.value}"
     }
 
     "generate next token each time" in new Fixture {
-      nextToken(smith) mustBe Token("0", smith)
-      nextToken(smith) mustBe Token("1", smith)
-      nextToken(smith) mustBe Token("2", smith)
+      scoreManager.nextToken(smith) mustBe Token("0", smith)
+      scoreManager.nextToken(smith) mustBe Token("1", smith)
+      scoreManager.nextToken(smith) mustBe Token("2", smith)
     }
   }
 
-  class Fixture extends ScoreManager(new SimpleTokenGenerator, new SimpleQuestionGenerator, 2)
+
+  class Fixture {
+    val questionGenerator = mock[QuestionGenerator]
+    questionGenerator.next returns QuestionAndAnswer("what is 1 + 1 ?", 2)
+
+    val scoreManager = new ScoreManager(new SimpleTokenGenerator, questionGenerator, 2)
+  }
 
   private val smith = "smith"
   private val johnson = "johnson"

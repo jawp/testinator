@@ -5,7 +5,7 @@ import akka.event.Logging
 import akka.stream.ActorMaterializer
 import app.Main
 import com.typesafe.config.ConfigFactory
-import questions.RealQuestionGenerator
+import questions.QuestionGenerator
 import scores.ScoreManager
 import service.Service
 import tokens._
@@ -21,7 +21,7 @@ object ProductionModule {
 
   val tokenGenerator = new RandomTokenGenerator
 
-  val questionGenerator = new RealQuestionGenerator
+  val questionGenerator = new QuestionGenerator
 
   val scoreManager = new ScoreManager(tokenGenerator, questionGenerator, numberOfQuestions)
 
