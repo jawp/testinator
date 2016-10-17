@@ -9,13 +9,8 @@ class ScoreManager(tokenGenerator: TokenGenerator, questionGenerator: QuestionGe
   private val scoreCards = collection.mutable.Map[Token, ScoreCard]()
 
   def nextToken(name: String): Token = {
-    //removing old tokens for name
-    val tokensToInvalid = scoreCards.filterKeys( _.name == name)
-    tokensToInvalid.foreach{ case(t, _) => scoreCards -= t}
-
-    //adding new token for name
     val newToken = tokenGenerator.nextTokenFor(name)
-    scoreCards += (newToken -> ScoreCard())
+    scoreCards.getOrElseUpdate(newToken, ScoreCard())
     newToken
   }
 

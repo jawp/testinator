@@ -108,18 +108,17 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
       }
 
       "after re-generating token" - {
-        "invalid the old one for the same name" in new Fixture{
+        "generate and return the new one, but also keep the old one" in new Fixture{
           val token = nextToken(smith)
           nextQuestion(token) mustBe "what is 0 ?"
           answer(token, "0") mustBe "pass"
 
           val anotherToken = nextToken(smith)
-
-          nextQuestion(token) mustBe s"Broken token: ${token.value}"
-          answer(token, "0") mustBe s"Broken token: ${token.value}"
-
           nextQuestion(anotherToken) mustBe "what is 1 ?"
           answer(anotherToken, "1") mustBe "pass"
+
+          nextQuestion(token) mustBe "what is 2 ?"
+          answer(token, "2") mustBe "You have finished"
         }
       }
     }
