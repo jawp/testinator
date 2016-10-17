@@ -1,6 +1,4 @@
 
-score manager - move checkAnswer logic to ScoreCard
-score manager - beautifying code and specs
 
 question generator - add random operators to RealQuestionGenerator
 
