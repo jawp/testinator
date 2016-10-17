@@ -6,9 +6,9 @@ import tokens.{SimpleTokenGenerator, Token}
 
 class ScoreManagerSpec extends FreeSpec with MustMatchers {
 
-  "for token obtained" - {
+  "for token generated" - {
 
-    "when question is known" - {
+    "when question is generated" - {
 
       "finish after all correct answers (regardless other tokens activities)" in new Fixture {
         val token = nextToken(smith)
@@ -24,10 +24,13 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
         answer(token, "2") mustBe "You have finished"
       }
 
-      "fail at wrong answer" in new Fixture {
+      "fail at wrong answer and spoil the token" in new Fixture {
         val token = nextToken(smith)
         nextQuestion(token) mustBe "what is 0 ?"
         answer(token, "wrongAnswer") mustBe "fail"
+
+        nextQuestion(token) mustBe "Token is spoilt. Please generate a new token to restart."
+        answer(token, "any") mustBe "Token is spoilt. Please generate a new token to restart."
       }
 
       "don't generate other questions until first one is answered" in new Fixture {
@@ -41,17 +44,20 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
       }
 
       "after pass" - {
-        "question should expire" in new Fixture {
+        "question should expire. You should be able to generate a new one" in new Fixture {
           val token = nextToken(smith)
           nextQuestion(token) mustBe "what is 0 ?"
           answer(token, "0") mustBe "pass"
 
-          answer(token, "anyAnswer") mustBe "There's no pending question ..."
+          answer(token, "any") mustBe "There's no pending question ..."
+
+          nextQuestion(token) mustBe "what is 1 ?"
+          answer(token, "1") mustBe "You have finished"
         }
       }
 
       "after finish" - {
-        "don't accept answers" in new Fixture {
+        "don't accept answers or generate questions. Only a new token makes restart possible" in new Fixture {
           val token = nextToken(smith)
           nextQuestion(token) mustBe "what is 0 ?"
           answer(token, "0") mustBe "pass"
@@ -59,25 +65,7 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
           nextQuestion(token) mustBe "what is 1 ?"
           answer(token, "1") mustBe "You have finished"
 
-          answer(token, "anyAnswer") mustBe "Test is complete. Please generate a new token if you want to restart"
-
-          val newToken = nextToken(smith)
-          nextQuestion(newToken) mustBe "what is 2 ?"
-          answer(newToken, "2") mustBe "pass"
-
-          nextQuestion(newToken) mustBe "what is 3 ?"
-          answer(newToken, "3") mustBe "You have finished"
-
-        }
-
-        "don't generate questions" in new Fixture {
-          val token = nextToken(smith)
-          nextQuestion(token) mustBe "what is 0 ?"
-          answer(token, "0") mustBe "pass"
-
-          nextQuestion(token) mustBe "what is 1 ?"
-          answer(token, "1") mustBe "You have finished"
-
+          answer(token, "any") mustBe "Test is complete. Please generate a new token if you want to restart"
           nextQuestion(token) mustBe "Test is complete. Please generate a new token if you want to restart"
 
           val newToken = nextToken(smith)
@@ -88,23 +76,6 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
           answer(newToken, "3") mustBe "You have finished"
         }
 
-      }
-
-      "after failure" - {
-        "don't accept answers" in new Fixture {
-          val token = nextToken(smith)
-          nextQuestion(token) mustBe "what is 0 ?"
-          answer(token, "wrongAnswer") mustBe "fail"
-
-          answer(token, "anyAnswer") mustBe "Token is spoilt. Please generate a new token to restart."
-        }
-        "don't generate questions" in new Fixture {
-          val token = nextToken(smith)
-          nextQuestion(token) mustBe "what is 0 ?"
-          answer(token, "wrongAnswer") mustBe "fail"
-
-          nextQuestion(token) mustBe "Token is spoilt. Please generate a new token to restart."
-        }
       }
 
       "after re-generating token" - {
@@ -123,23 +94,23 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers {
       }
     }
 
-    "when question is unknown" - {
+    "when question is not generated yet" - {
 
       "don't accept any answer" in new Fixture {
         val token = nextToken(smith)
-        answer(token, "anyAnswer") mustBe "There's no pending question ..."
+        answer(token, "any") mustBe "There's no pending question ..."
       }
     }
   }
 
-  "for no token obtained" - {
+  "for no token generated" - {
 
     "don't generate question" in new Fixture {
       nextQuestion(badToken) mustBe s"Broken token: ${badToken.value}"
     }
 
     "don't accept any answer" in new Fixture {
-      answer(badToken, "anyAnswer") mustBe s"Broken token: ${badToken.value}"
+      answer(badToken, "any") mustBe s"Broken token: ${badToken.value}"
     }
 
     "generate next token each time" in new Fixture {
