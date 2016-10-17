@@ -19,7 +19,7 @@ object ProductionModule {
 
   val config = ConfigFactory.load()
 
-  val tokenGenerator = new RandomTokenGenerator
+  val tokenGenerator = new TokenGenerator
 
   val questionGenerator = new QuestionGenerator
 

@@ -1,9 +1,11 @@
 package scores
 
+import java.util.concurrent.atomic.AtomicInteger
+
 import org.scalatest._
 import org.specs2.mock.Mockito
 import questions.{QuestionAndAnswer, QuestionGenerator}
-import tokens.{SimpleTokenGenerator, Token}
+import tokens.{Token, TokenGenerator}
 
 class ScoreManagerSpec extends FreeSpec with MustMatchers with Mockito {
 
@@ -125,7 +127,12 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers with Mockito {
     val questionGenerator = mock[QuestionGenerator]
     questionGenerator.next returns QuestionAndAnswer("what is 1 + 1 ?", 2)
 
-    val scoreManager = new ScoreManager(new SimpleTokenGenerator, questionGenerator, 2)
+    val incrementingTokenGenerator = new TokenGenerator {
+      private val generator = new AtomicInteger()
+      override def nextTokenFor(name: String) = Token(generator.getAndIncrement().toString, name)
+    }
+
+    val scoreManager = new ScoreManager(incrementingTokenGenerator, questionGenerator, 2)
   }
 
   private val smith = "smith"
