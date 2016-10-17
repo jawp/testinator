@@ -9,7 +9,7 @@ import org.scalatest._
 import org.specs2.mock.Mockito
 import questions.QuestionGenerator
 import scores.ScoreManager
-import tokens.SimpleTokenGenerator
+import tokens.{Token, TokenGenerator}
 
 class ServiceSpec extends FreeSpec with MustMatchers with ScalatestRouteTest with Mockito {
 
@@ -23,26 +23,24 @@ class ServiceSpec extends FreeSpec with MustMatchers with ScalatestRouteTest wit
       }
     }
 
-    "return new token" in new Fixture {
+    "start test by generating token" in new Fixture {
       Get(s"/startTest/$name") ~> routes ~> check {
         status mustBe OK
         contentType mustBe `text/plain(UTF-8)`
-        responseAs[String] mustBe "Hi " + name + s". Your token is: 0"
+        responseAs[String] mustBe "Hi " + name + s". Your token is: 12345"
       }
-
-      Get(s"/startTest/$name") ~> routes ~> check {
-        status mustBe OK
-        contentType mustBe `text/plain(UTF-8)`
-        responseAs[String] mustBe "Hi " + name + s". Your token is: 1"
-      }
-
     }
   }
 
+  val name = "John"
+
   class Fixture {
 
-    val tokenGenerator = new SimpleTokenGenerator
+    val tokenGenerator = mock[TokenGenerator]
+    tokenGenerator.nextTokenFor(name) returns Token("12345", name)
+
     val questionGenerator = mock[QuestionGenerator]
+
     val scoreManager = new ScoreManager(tokenGenerator, questionGenerator, 10)
     val service = new Service(scoreManager) {
       override val logger = NoLogging
@@ -50,5 +48,4 @@ class ServiceSpec extends FreeSpec with MustMatchers with ScalatestRouteTest wit
     val routes = service.routes
   }
 
-  val name = "John"
 }
