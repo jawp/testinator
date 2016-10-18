@@ -116,9 +116,9 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers with Mockito {
     }
 
     "generate next token each time" in new Fixture {
-      scoreManager.nextToken(smith) mustBe Token("0", smith)
-      scoreManager.nextToken(smith) mustBe Token("1", smith)
-      scoreManager.nextToken(smith) mustBe Token("2", smith)
+      scoreManager.nextToken(smith) mustBe Token("0")
+      scoreManager.nextToken(smith) mustBe Token("1")
+      scoreManager.nextToken(smith) mustBe Token("2")
     }
   }
 
@@ -129,7 +129,7 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers with Mockito {
 
     val incrementingTokenGenerator = new TokenGenerator {
       private val generator = new AtomicInteger()
-      override def nextTokenFor(name: String) = Token(generator.getAndIncrement().toString, name)
+      override def nextTokenFor(name: String) = Token(generator.getAndIncrement().toString)
     }
 
     val scoreManager = new ScoreManager(incrementingTokenGenerator, questionGenerator, 2)
@@ -138,5 +138,5 @@ class ScoreManagerSpec extends FreeSpec with MustMatchers with Mockito {
   private val smith = "smith"
   private val johnson = "johnson"
 
-  private val badToken = Token("anyIncorrectToken", smith)
+  private val badToken = Token("anyIncorrectToken")
 }
