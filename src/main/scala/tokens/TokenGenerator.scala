@@ -3,8 +3,7 @@ package tokens
 import scala.util.Random
 
 class TokenGenerator(size: Int = 10) {
-  def nextTokenFor(name: String) = Token(Random.alphanumeric.take(size).mkString, name)
+  def nextTokenFor(name: String): Token = Token(Random.alphanumeric.take(size).mkString)
 }
 
-
-case class Token(value: String, name: String)
+case class Token(value: String)

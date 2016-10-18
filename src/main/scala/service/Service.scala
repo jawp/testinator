@@ -8,6 +8,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.stream.Materializer
 import model.HomePage
 import scores.ScoreManager
+import tokens.Token
 
 abstract class Service(scoreManager: ScoreManager)(
   implicit val system: ActorSystem,
@@ -23,16 +24,22 @@ abstract class Service(scoreManager: ScoreManager)(
       path("") {
         get(complete(HomePage.content))
       } ~
-        pathPrefix("startTest") {
-          (get & path(Segment)) { name =>
-            complete {
-              nextTokenFor(name)
-            }
-          }
+        pathPrefix("startTest" / Segment) {
+          name => complete(nextTokenFor(name))
+        } ~
+        pathPrefix(Segment / "nextQuestion") {
+          token => complete(nextQuestionFor(token))
+        } ~
+        pathPrefix(Segment / "answer" / Segment) {
+          (token, answer) => complete(answerFor(token, answer))
         }
     }
   }
 
   private def nextTokenFor(name: String) = s"Hi $name. Your token is: ${scoreManager.nextToken(name).value}"
+
+  private def nextQuestionFor(token: String) = scoreManager.nextQuestion(Token(token))
+
+  private def answerFor(token: String, answer: String) = scoreManager.answer(Token(token), answer)
 }
 
