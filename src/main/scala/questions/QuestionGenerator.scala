@@ -7,7 +7,8 @@ class QuestionGenerator {
   def next: QuestionAndAnswer = {
     val n1 = nextInt
     val n2 = nextInt
-    QuestionAndAnswer(s"What is the value of $n1 + $n2 ?", n1 + n2)
+    val plus = "+"
+    QuestionAndAnswer("What is " + n1 + " " + plus + " " + n1 + "?", n1 + n2)
   }
 
   private def nextInt = Random.nextInt(100)
