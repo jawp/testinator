@@ -8,7 +8,7 @@ class QuestionGenerator {
     val n1 = nextInt
     val n2 = nextInt
     val op = randomOp
-    QuestionAndAnswer("What is " + n1 + " " + op.name + " " + n1 + "?", op.compute(n1, n2))
+    QuestionAndAnswer("What is " + n1 + " " + op.name + " " + n2 + "?", op.compute(n1, n2))
   }
 
   private def nextInt = Random.nextInt() % 9 + 1
