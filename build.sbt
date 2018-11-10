@@ -1,7 +1,6 @@
 enablePlugins(JavaAppPackaging)
 
-name := "akka-http-microservice"
-organization := "com.jawp"
+name := "testinator rewritten by me"
 version := "1.0"
 scalaVersion := "2.11.8"
 
